@@ -109,7 +109,7 @@
 
     .content{
         display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-start;
+        align-items: stretch;
     }
 </style>
