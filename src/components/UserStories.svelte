@@ -8,14 +8,31 @@
     let priority = 2
     let division = 2
 
+    $:stories = []
+
+    const reset = ()=>{
+        user = userstory = criteria = ''
+        estimate = 1, priority = 2, division = 2
+    }
+
+    const add = ()=>{
+        if(!userstory) return alert('User story is required')
+        if(!criteria) return alert('Acceptance criteria is required')
+        if(!user) return alert('A user is required')
+        // write to db
+        stories = [...stories, {user, story: userstory}]
+    }
+
 </script>
 <div class="availables">
     <span>Available</span>
     <div class="items">
-        <Story user="User A" story="As User A i want x to do y"/>
-        <Story user="User B" story="As User A i want x to do y"/>
+        {#each stories as item}
+            <Story user={item.user} story={item.story}/>
+        {/each}
+        <!-- <Story user="User A" story="As User A i want x to do y"/>
+        <Story user="User B" story="As User A i want x to do y"/> -->
     </div>
-    <div class="spacer"></div>
 </div>
 <div class="newstory">
     <span>Add a user story</span>
@@ -45,8 +62,8 @@
         </div>
     </div>
     <div class="controls">
-        <button>Add</button>
-        <button class="reset">Reset</button>
+        <button on:click={add}>Add</button>
+        <button class="reset" on:click={reset}>Reset</button>
     </div>
 </div>
 
@@ -120,10 +137,12 @@
         font-size: 18px;
     }
     .availables{
+        overflow-y: scroll;
         padding: 10px;
         display: grid;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto 1fr;
         min-width: 20vw;
+        max-height: 90vh;
         background: #c1c1c1;
     }
     .availables span{
