@@ -1,4 +1,20 @@
+<script>
+    let feature = ''
+    let description = ''
+    let selected = 0
 
+    const add = ()=>{
+        if(selected === 0) return
+        if(feature === '') return alert("feature is required")
+        if(description === '') return alert("description is required")
+        // add record to db
+        alert("selected not equal to zero")
+    }
+    const reset = ()=>{
+        feature = ''
+        description = ''
+    }
+</script>
 
 <div class="box">
     <div class="stories">
@@ -8,11 +24,11 @@
     </div>
     <div class="featureform">
         <span>Feature</span>
-        <input type="text" placeholder="Feature">
-        <textarea cols="30" rows="5" placeholder="feature description..."></textarea>
+        <input type="text" placeholder="Feature" bind:value={feature}>
+        <textarea bind:value={description} cols="30" rows="5" placeholder="feature description..."></textarea>
         <div class="controls">
-            <button>Add</button>
-            <button id="reset">Reset</button>
+            <button on:click={add}>Add</button>
+            <button id="reset" on:click={reset}>Reset</button>
         </div>
         <div class="more">
             <span>title</span>
@@ -104,6 +120,7 @@
     }
 
     button{
+        cursor: pointer;
         background: #228bb8;
         padding: 10px;
         outline-style: none;
