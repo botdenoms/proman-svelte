@@ -1,13 +1,27 @@
 <script>
     let feature = ''
     let description = ''
-    let selected = 0
+    let selected = -1
 
+    $:stories = [
+        {
+            user: "denoms",
+            story: "Lorem ipsum dolor, sit amet consectetur adipisicing" 
+        },
+        {
+            user: "deno0ms",
+            story: "Lorem ipsum dolor, sit amet consectetur adipisicing...."
+        }
+    ]
+
+    const selectStory = (/** @type {number} */ idx)=>{
+        selected = idx
+    }
     const add = ()=>{
-        if(selected === 0) return
+        if(selected === -1) return
         if(feature === '') return alert("feature is required")
         if(description === '') return alert("description is required")
-        // add record to db
+        // add record to db on the selected story
         alert("selected not equal to zero")
     }
     const reset = ()=>{
@@ -20,6 +34,11 @@
     <div class="stories">
         <span>User Stories</span>
         <div class="items">
+            {#each stories as story, i}
+                <div class="{selected === i? 'item selected' : 'item'}" on:click={()=>selectStory(i)}>
+                    <span>{story.user}</span>
+                </div>
+            {/each}
         </div>
     </div>
     <div class="featureform">
@@ -30,12 +49,14 @@
             <button on:click={add}>Add</button>
             <button id="reset" on:click={reset}>Reset</button>
         </div>
-        <div class="more">
-            <span>title</span>
-            <div class="content">
-                Lorem ipsum dolor, sit amet consectetur adipisicing
+        {#if stories.length>0 && selected !== -1}
+            <div class="more">
+                <span>{stories[selected].user}</span>
+                <div class="content">
+                    {stories[selected].story}
+                </div>
             </div>
-        </div>
+        {/if}
     </div>
     <div class="features">
         <span>Features in story</span>
@@ -45,6 +66,19 @@
 </div>
 
 <style>
+    .selected{
+        background-color: #fff;
+    }
+    .item{
+        padding: 5px;
+        margin: 2px 0;
+        cursor: pointer;
+    }
+    .item span{
+        color: #1e1e1e;
+        font-size: 18px;
+        text-transform: capitalize;
+    }
     .more{
         margin-top: 20px;
         display: block;
