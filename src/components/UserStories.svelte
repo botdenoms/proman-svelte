@@ -30,8 +30,6 @@
         {#each stories as item}
             <Story user={item.user} story={item.story}/>
         {/each}
-        <!-- <Story user="User A" story="As User A i want x to do y"/>
-        <Story user="User B" story="As User A i want x to do y"/> -->
     </div>
 </div>
 <div class="newstory">
@@ -142,8 +140,9 @@
         display: grid;
         grid-template-rows: auto 1fr;
         min-width: 20vw;
-        max-height: 90vh;
+        max-height: 85vh;
         background: #c1c1c1;
+
     }
     .availables span{
         font-size: 15px;
