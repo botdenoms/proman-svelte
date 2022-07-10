@@ -6,7 +6,7 @@
     $:stories = [
         {
             user: "denoms",
-            story: "Lorem ipsum dolor, sit amet consectetur adipisicing" 
+            story: "Lorem ipsum dolor, sit amet consectetur adipisicing"
         },
         {
             user: "deno0ms",
@@ -14,8 +14,16 @@
         }
     ]
 
+    $:features = [
+        {
+            feature: "feature verb",
+            details: "Lorem ipsum dolor, sit amet consectetur adipisicing"
+        }
+    ]
+
     const selectStory = (/** @type {number} */ idx)=>{
         selected = idx
+        // fetch features list with selectd story id
     }
     const add = ()=>{
         if(selected === -1) return
@@ -27,6 +35,9 @@
     const reset = ()=>{
         feature = ''
         description = ''
+    }
+    const remove = (/** @type {number} */ idx)=>{
+        alert(`remove fearure ${idx}`)
     }
 </script>
 
@@ -60,12 +71,77 @@
     </div>
     <div class="features">
         <span>Features in story</span>
-        <div class="items">    
-        </div>
-    </div>
+        {#if selected !== -1}
+            <div class="items">
+                {#each features as feat,i}
+                    <div class="feat">
+                        <div class="top">
+                            <span>{feat.feature}</span>
+                            <button on:click={()=>remove(i)} class="close">X</button>
+                        </div>
+                        <div class="content">
+                            {feat.details}
+                        </div>
+                    </div>
+                {/each}   
+            </div>
+        {:else}
+            <div class="plc">
+                <span>Select a story to see features</span>
+            </div>
+        {/if}
+    </div>       
 </div>
 
 <style>
+    .feat{
+        padding: 5px;
+        margin: 2px 0;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        height: 30px;
+    }
+    .feat .content{
+        color: #1e1e1e;
+        font-size: 18px;
+        margin: 2px 0;
+        visibility: hidden;
+    }
+    .feat .top{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .feat .close{
+        width: 28px;
+        height: 28px;
+        background: red;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-weight: bold;
+        visibility: hidden;
+    }
+    .feat:hover{
+        height: auto;
+    }
+    .feat:hover .close{
+        visibility: visible;
+    }
+
+    .feat:hover .content{
+        visibility: visible;
+    }
+    .plc{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .selected{
         background-color: #fff;
     }
