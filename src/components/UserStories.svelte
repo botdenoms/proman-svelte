@@ -142,7 +142,6 @@
         min-width: 20vw;
         max-height: 85vh;
         background: #c1c1c1;
-
     }
     .availables span{
         font-size: 15px;

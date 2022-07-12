@@ -30,7 +30,7 @@
         if(feature === '') return alert("feature is required")
         if(description === '') return alert("description is required")
         // add record to db on the selected story
-        alert("selected not equal to zero")
+        features = [...features, {feature, details:description}]
     }
     const reset = ()=>{
         feature = ''
@@ -180,7 +180,7 @@
         display: grid;
         grid-template-rows: auto 1fr;
         min-width: 20vw;
-        /* max-height: 85vh; */
+        max-height: 85vh;
         background: #c1c1c1; 
     }
     .controls{
@@ -211,7 +211,7 @@
         display: grid;
         grid-template-rows: auto 1fr;
         min-width: 20vw;
-        /* max-height: 85vh; */
+        max-height: 85vh;
         background: #c1c1c1; 
     }
     .box{
