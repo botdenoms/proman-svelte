@@ -1,12 +1,13 @@
 <script>
     let sprint = ''
     let index = -1
-    $: sprints = [1,2,3,5,2,3,2,3,5,2,3]
-    $: stories = [1,11,11,1,8,51,5,5]
+    $: sprints = [1]
+    $: stories = [1,11,2]
 
     const add = () =>{
         if(!sprint) return alert("sprint name is required")
         sprint = ''
+        sprints = [...sprints, 5]
     }
 
     const select = (/** @type {number} */ idx) =>{
@@ -16,6 +17,10 @@
     const assign = (/** @type {number} */ idx) =>{
         if (index === -1) return
         alert(idx.toString())
+        let tmp = stories.filter((v,i)=>{
+            return i !== idx?true:false
+        })
+        stories = tmp
     }
 
 </script>
@@ -71,6 +76,7 @@
         background: #fff;
         cursor: pointer;
         min-width: 400px;
+        max-width: 450px;
         padding: 10px;
         border-radius: 5px;
         display: flex;
