@@ -1,38 +1,67 @@
+<script>
+    let sprint = ''
+    let index = -1
+    $: sprints = [1,2,3,5,2,3,2,3,5,2,3]
+    $: stories = [1,11,11,1,8,51,5,5]
+
+    const add = () =>{
+        if(!sprint) return alert("sprint name is required")
+        sprint = ''
+    }
+
+    const select = (/** @type {number} */ idx) =>{
+        index = idx
+    }
+
+    const assign = (/** @type {number} */ idx) =>{
+        if (index === -1) return
+        alert(idx.toString())
+    }
+
+</script>
 <div class="wrapper">
     <div class="forms">
         <div class="sprintform">
             <span>Create a sprint</span>
-            <input type="text" placeholder="Sprint name">
-            <button>Create</button>
+            <input bind:value={sprint} type="text" placeholder="Sprint name">
+            <button on:click={add}>Create</button>
         </div>
         <div class="sprints">
             <span>Sprints</span>
             <div class="itemslist">
-                <div class="item active">
-                    <span>Lorem ipsum</span>
-                    <span>2</span>
-                </div>
+                {#each sprints as sprint, i}
+                    <div class="{index === i? 'item active' : 'item'}" on:click={()=>select(i)}>
+                        <span>Lorem ipsum</span>
+                        <span>2</span>
+                    </div> 
+                {/each}  
             </div>
         </div>
     </div>
     <div class="stories">
         <span>User stories</span>
         <div class="items">
-            <div class="story">
-                <span id='user'>User identity</span>
-                <div class="userstory">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                    Explicabo, sed asperiores!
+            {#each stories as sty, i}
+            <div class="story" on:click={()=>assign(i)}>
+                <div>
+                    <span id='user'>User identity</span>
+                    <div class="userstory">
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
+                        Explicabo, sed asperiores!
+                    </div>
                 </div>
-                <div class="prior">
-                    Priority: <span>1</span>
-                </div>
-                <div class="prior">
-                    Features: <span>1</span>
+                <div>
+                    <div class="prior">
+                        Priority: <span>1</span>
+                    </div>
+                    <div class="prior">
+                        Features: <span>1</span>
+                    </div>
                 </div>
             </div>
+            {/each}
         </div>
-        <div></div>
+        <!-- <div class="spacer"></div> -->
     </div>
 </div>
 
@@ -41,9 +70,12 @@
         margin-right: 5px;
         background: #fff;
         cursor: pointer;
-        width: 300px;
+        min-width: 400px;
         padding: 10px;
         border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .story:hover{
@@ -51,8 +83,12 @@
         box-shadow: 1px 3px 4px rgba(0, 0, 0, .3);
     }
     .items{
+        padding: 5px;
+        justify-content: stretch;
+        overflow-x: scroll;
         display: flex;
-        align-items: center;
+        align-items: stretch;
+        height: 100%;
     }
 
     .userstory{
@@ -71,13 +107,18 @@
     .stories{
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
+        align-items: stretch;
         margin-top: 2px;
+        margin-bottom: 2px;
         background: #c1c1c1;
         padding: 10px;
+        max-height: 50vh;
+        overflow: hidden;
     }
     .stories span{
         color: #1e1e1e;
+        margin-bottom: 10px;
     }
     .sprints{
         overflow-y: scroll;
@@ -109,9 +150,10 @@
         color: #228bb8;
     }
     .wrapper{
-        width: 100%;
+        overflow-x: hidden;
+        width: 100vw;
         display: grid;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: 40% 60%;
     }
 
     .forms{
