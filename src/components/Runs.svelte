@@ -1,58 +1,189 @@
 <script>
+    let custom = false
+    let aval = -1
+    let run = -1
+    let doneIdx = -1
+
+    $:sprints = [
+        {
+            name:"Sprint one",
+            stories: 5,
+            features: 12,
+            time: 5,
+            division: 'Days',
+            status: 0
+        },
+        {
+            name:"Sprint old",
+            stories: 1,
+            features: 2,
+            time: 1,
+            division: 'Days',
+            status: 2
+        },
+        {
+            name:"Sprint two",
+            stories: 4,
+            features: 8,
+            time: 2,
+            division: 'Days',
+            status: 1
+        }
+    ]
+
+    $:available = sprints.filter((i)=>i.status === 0)
+    $:running = sprints.filter((i)=>i.status === 1)
+    $:done = sprints.filter((i)=>i.status === 2)
+
+    const customChange = ()=>{
+        custom = !custom
+    }
+
+    const selectAval = (/** @type {number} */ idx)=>{
+        run = -1
+        doneIdx = -1
+        if (aval === idx) {
+            aval = -1
+        }else{
+            aval = idx
+        }
+    }
+
+    const selectRun = (/** @type {number} */ idx)=>{
+        aval = -1
+        doneIdx = -1
+        if (run === idx) {
+            run = -1
+        }else{
+            run = idx
+        }
+    }
+
+    const selectDone = (/** @type {number} */ idx)=>{
+        run = -1
+        aval = -1
+        if (doneIdx === idx) {
+            doneIdx = -1
+        }else{
+            doneIdx = idx
+        }
+    }
+
+    const runSprint = ()=>{
+        if(running.length > 0){
+            alert("Cannot run two sprints at the same time")
+            return
+        }
+        // logic to start a new sprint
+    }
 </script>
 
 <div class="wrapper">
     <div class="sprints">
         <span>Available</span>
         <div class="items">
-            <div class="item selected">
-                sprint 1
-            </div>
-            <div class="item">
-                sprint 2
-            </div>
+            {#each available as sprt, i}
+                <div  class="{aval === i? 'item selected' : 'item'}" on:click={()=>selectAval(i)}>
+                    {sprt.name}
+                </div>
+            {/each}
         </div>
         <span>Running</span>
-        <div class="items"></div>
+        <div class="items">
+            {#each running as sprt, i}
+                <div  class="{run === i? 'item selected' : 'item'}" on:click={()=>selectRun(i)}>
+                    {sprt.name}
+                </div>
+            {/each}
+        </div>
         <span>Done</span>
-        <div class="items"></div>
+        <div class="items">
+            {#each done as sprt, i}
+                <div  class="{doneIdx === i? 'item selected' : 'item'}" on:click={()=>selectDone(i)}>
+                    {sprt.name}
+                </div>
+            {/each}
+        </div>
     </div>
     <div class="manager">
         <div class="running">
             No running sprints
         </div>
-        <div class="run">
-            <div class="control">
-                Sprint Name
-                <button>Run</button>
-            </div>
-            <div class="tile">
-                No of stories: <span>1</span>
-            </div>
-            <div class="tile">
-                No of features: <span>1</span>
-            </div>
-            <div class="tile">
-                Estimated time: <span>1 days</span>
-            </div>
-            <div class="custom">
-                Use custom time:
-                <input type="checkbox">
-                <div class="more">
-                    <input type="number" placeholder=1>
-                    <select name="time" value=1>
-                        <option value=0>Hour(s)</option>
-                        <option value=1>Day(s)</option>
-                        <option value=2>Week(s)</option>
-                        <option value=3>Month(s)</option>
-                    </select>
+        {#if aval !== -1}
+            <div class="run">
+                <div class="control">
+                    {available[aval].name}
+                    <button on:click={()=>runSprint()}>Run</button>
+                </div>
+                <div class="tile">
+                    No of stories: <span>{available[aval].stories}</span>
+                </div>
+                <div class="tile">
+                    No of features: <span>{available[aval].features}</span>
+                </div>
+                <div class="tile">
+                    Estimated time: <span>{available[aval].time} {available[aval].division}</span>
+                </div>
+                <div class="custom">
+                    Use custom time:
+                    <input type="checkbox" on:click={customChange}>
+                    {#if custom}
+                        <div class="more">
+                            <input type="number" placeholder=1>
+                            <select name="time" value=1>
+                                <option value=0>Hour(s)</option>
+                                <option value=1>Day(s)</option>
+                                <option value=2>Week(s)</option>
+                                <option value=3>Month(s)</option>
+                            </select>
+                        </div>
+                    {/if}
+                    
                 </div>
             </div>
-        </div>
+        {:else if doneIdx !== -1}
+            <div class="run">
+                <div class="control">
+                    {done[doneIdx].name}
+                    <span class="done">Finished</span>
+                </div>
+                <div class="tile">
+                    No of stories: <span>{done[doneIdx].stories}</span>
+                </div>
+                <div class="tile">
+                    No of features: <span>{done[doneIdx].features}</span>
+                </div>
+                <div class="tile">
+                    Estimated time: <span>{done[doneIdx].time} {done[doneIdx].division}</span>
+                </div>
+            </div> 
+        {:else if run !== -1}
+            <div class="run">
+                <div class="control">
+                    {running[run].name}
+                    <span class="alert">Running</span>
+                </div>
+                <div class="tile">
+                    No of stories: <span>{running[run].stories}</span>
+                </div>
+                <div class="tile">
+                    No of features: <span>{running[run].features}</span>
+                </div>
+                <div class="tile">
+                    Estimated time: <span>{running[run].time} {running[run].division}</span>
+                </div>
+            </div>
+        {/if}
     </div>
 </div>
 
 <style>
+    .done{
+        color: green;
+    }
+    .alert{
+        color: red;
+    }
     input{
         margin: 0 10px;
         font-size: 17px;
