@@ -190,6 +190,7 @@
         width: 100px;
         border-style: none;
         border-radius: 5px;
+        cursor: pointer;
     }
 
    

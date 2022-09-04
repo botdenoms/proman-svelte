@@ -76,7 +76,8 @@
         color: #fff;
         width: 100px;
         border-style: none;
-        border-radius: 5px; 
+        border-radius: 5px;
+        cursor: pointer;
     }
     input{
         margin: 0 10px;

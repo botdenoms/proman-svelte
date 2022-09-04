@@ -3,28 +3,29 @@
     let aval = -1
     let run = -1
     let doneIdx = -1
+    let viewid = -1
 
     $:sprints = [
         {
             name:"Sprint one",
-            stories: 5,
-            features: 12,
+            stories: [5],
+            features: [12],
             time: 5,
             division: 'Days',
             status: 0
         },
         {
             name:"Sprint old",
-            stories: 1,
-            features: 2,
+            stories: [1],
+            features: [2],
             time: 1,
             division: 'Days',
             status: 2
         },
         {
             name:"Sprint two",
-            stories: 4,
-            features: 8,
+            stories: [4, 5, 6],
+            features: [8],
             time: 2,
             division: 'Days',
             status: 1
@@ -34,6 +35,10 @@
     $:available = sprints.filter((i)=>i.status === 0)
     $:running = sprints.filter((i)=>i.status === 1)
     $:done = sprints.filter((i)=>i.status === 2)
+
+    const more = (/** @type {number} */ idx)=>{
+        viewid = idx
+    }
 
     const customChange = ()=>{
         custom = !custom
@@ -106,8 +111,63 @@
         </div>
     </div>
     <div class="manager">
-        <div class="running">
-            No running sprints
+        <div>
+            {#if running.length === 0}
+               <div class="running">
+                    No running sprints
+               </div> 
+            {:else}
+                <div class="section">
+                    <div class="bar">
+                        <div>
+                            <span>{running[0].name}</span>
+                        </div>
+                        <div class="countdown">
+                            <div class="dtbox"><span>1</span> D</div>
+                            <div class="dtbox"><span>1</span> H</div>
+                            <div class="dtbox"><span>1</span> M</div>
+                            <div class="dtbox"><span>1</span> S</div>
+                        </div>
+                    </div>
+                    <div class="checklist">
+                        <div class="tabs">
+                            <div class="feats">
+                                Stories: <span>1/5</span>
+                            </div>
+                            <div class="feats">
+                                Features: <span>3/18</span>
+                            </div>
+                        </div>
+                        <div class="list">
+                            {#each running[0].stories as stry, i}
+                                <div class="storyitem">
+                                    <div class="header">
+                                        <div>
+                                            <span>0%</span>
+                                            <span>{stry}</span>
+                                        </div>
+                                        <span class="dropdwn" on:click={()=>more(i)}>></span>   
+                                    </div>
+                                    <div class="{viewid === i? 'features' : 'featuresoff'}">
+                                        <div class="feature">
+                                            <input type="checkbox">
+                                            <span>features name</span>
+                                        </div>
+                                        <div class="feature">
+                                            <input type="checkbox">
+                                            <span>features name</span>
+                                        </div>
+                                        <div class="feature">
+                                            <input type="checkbox">
+                                            <span>features name</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+                </div>
+            {/if}
         </div>
         {#if aval !== -1}
             <div class="run">
@@ -116,10 +176,10 @@
                     <button on:click={()=>runSprint()}>Run</button>
                 </div>
                 <div class="tile">
-                    No of stories: <span>{available[aval].stories}</span>
+                    No of stories: <span>{available[aval].stories.length}</span>
                 </div>
                 <div class="tile">
-                    No of features: <span>{available[aval].features}</span>
+                    No of features: <span>{available[aval].features.length}</span>
                 </div>
                 <div class="tile">
                     Estimated time: <span>{available[aval].time} {available[aval].division}</span>
@@ -148,10 +208,10 @@
                     <span class="done">Finished</span>
                 </div>
                 <div class="tile">
-                    No of stories: <span>{done[doneIdx].stories}</span>
+                    No of stories: <span>{done[doneIdx].stories.length}</span>
                 </div>
                 <div class="tile">
-                    No of features: <span>{done[doneIdx].features}</span>
+                    No of features: <span>{done[doneIdx].features.length}</span>
                 </div>
                 <div class="tile">
                     Estimated time: <span>{done[doneIdx].time} {done[doneIdx].division}</span>
@@ -164,10 +224,10 @@
                     <span class="alert">Running</span>
                 </div>
                 <div class="tile">
-                    No of stories: <span>{running[run].stories}</span>
+                    No of stories: <span>{running[run].stories.length}</span>
                 </div>
                 <div class="tile">
-                    No of features: <span>{running[run].features}</span>
+                    No of features: <span>{running[run].features.length}</span>
                 </div>
                 <div class="tile">
                     Estimated time: <span>{running[run].time} {running[run].division}</span>
@@ -178,6 +238,74 @@
 </div>
 
 <style>
+    .featuresoff{
+        display: none;
+    }
+    .features{
+        display: flex;
+    }
+    .feature{
+        display: flex;
+        align-items: center;
+    }
+    .dropdwn{
+        font-size: 40px;
+        font-weight: bold;
+        color: #1e1e1e;
+        padding: 5px;
+    }
+    .checklist{
+        margin-top: 5px;
+    }
+    .header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .storyitem{
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    .section span{
+        color: #1e1e1e;
+        font-size: 18px;
+    }
+    .dtbox span{
+        color: red;
+    }
+    .tabs{
+        display: flex;
+    }
+    .countdown{
+        display: flex;
+    }
+    .feats{
+        display: flex;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+    .feats span{
+        color: green;
+    }
+    .bar{
+        padding-bottom: 5px;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        border-bottom: #1e1e1e 1px solid;
+    }
+    
+    .section{
+        height: 100%;
+        padding: 5px;
+        margin: 0 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-shadow: 0 3px 2px rgba(0, 0, 0, .4);
+    }
     .done{
         color: green;
     }
