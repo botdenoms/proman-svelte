@@ -1,19 +1,32 @@
 <script>
     import {goto} from '$app/navigation'
+    import {onMount} from 'svelte'
 
-    $:projects = [
-        {
-            id: 1,
-            name: "Test Project 1"
-        },
-        {
-            id: 2,
-            name: "Project 101"
-        },
-        {
-            id: 3,
-            name: "Kill  the goat"
-        }
+    onMount(async ()=>{
+        // 127.0.0.1:port
+        let resp = await fetch("http://localhost:5000/projects")
+        // then(response => response.json()).then(data=>console.log(data)).catch(error=>console.log(error))
+        let data = await resp.json()
+        // console.log(data)
+        projects = [...data]
+    })
+
+   /**
+* @type {string | any[]}
+*/
+     $:projects = [
+        // {
+        //     id: 1,
+        //     name: "Test Project 1"
+        // },
+        // {
+        //     id: 2,
+        //     name: "Project 101"
+        // },
+        // {
+        //     id: 3,
+        //     name: "Kill  the goat"
+        // }
     ]
 
     let name = ''
@@ -147,7 +160,6 @@
         user-select: none;
         margin-bottom: 5px;
     }
-
     .name{
         color: #1e1e1e;
         margin: 5px 0;
@@ -191,7 +203,5 @@
         border-style: none;
         border-radius: 5px;
         cursor: pointer;
-    }
-
-   
+    }  
 </style>

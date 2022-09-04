@@ -21,6 +21,7 @@
         if(!user) return alert('A user is required')
         // write to db
         stories = [...stories, {user, story: userstory}]
+        reset()
     }
 
 </script>
