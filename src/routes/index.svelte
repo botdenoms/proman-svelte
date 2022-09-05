@@ -1,38 +1,37 @@
+<script context='module'>
+    export async function load(){
+        const res = await fetch("http://localhost:5000/projects")
+        if(res.ok){
+            const projects = await res.json()
+            return {
+                props: {projects}
+            }
+        }
+    }
+</script>
+
 <script>
     import {goto} from '$app/navigation'
-    import {onMount} from 'svelte'
+    // import {onMount} from 'svelte'
 
-    onMount(async ()=>{
-        // 127.0.0.1:port
-        let resp = await fetch("http://localhost:5000/projects")
-        // then(response => response.json()).then(data=>console.log(data)).catch(error=>console.log(error))
-        let data = await resp.json()
-        // console.log(data)
-        projects = [...data]
-    })
+    // onMount( async ()=>{
+    //     // 127.0.0.1:port
+    //     let resp = await fetch("http://localhost:5000/projects")
+    //     // then(response => response.json()).then(data=>console.log(data)).catch(error=>console.log(error))
+    //     let data = await resp.json()
+    //     // console.log(data)
+    //     projects = [...data]
+    // })
 
-   /**
+     export /**
 * @type {string | any[]}
 */
-     $:projects = [
-        // {
-        //     id: 1,
-        //     name: "Test Project 1"
-        // },
-        // {
-        //     id: 2,
-        //     name: "Project 101"
-        // },
-        // {
-        //     id: 3,
-        //     name: "Kill  the goat"
-        // }
-    ]
+      let projects = []
 
     let name = ''
     let description = ''
 
-    const createPoject = (/** @type {string} */ name) =>{
+    const createPoject = async() =>{
         if(!name){
             alert('A project name is required')
         } else if (!description) {
@@ -40,10 +39,19 @@
         } else {
             // create project in db
             const pid = projects.length + 1
-            projects = [...projects, {id:pid, name: name}]
+            fetch('http://localhost:5000/projects', {
+                method:'POST',
+                headers: {
+                    'Content-type' :'application/json'
+                },
+                body: JSON.stringify({id:pid, name, description, stories:[], features:[], sprints:[]})
+            }).then(resp=>resp.json())
+            .then(newdt => (projects = [newdt, ...projects]))
+            
+            projects = [...projects, {id:pid, name, description, stories:[], features:[], sprints:[]}]
             description = ''
             name = ''
-            goto(`/project/${projects[projects.length - 1].id}`,{replaceState: false})
+            goto(`/project/${pid}`,{replaceState: false})
         }
     }
 </script>
@@ -79,7 +87,7 @@
             class="descript" 
             bind:value={description}
             rows="4"/>
-        <button class="addbtn" on:click={()=>createPoject(name)}>Create</button>
+        <button class="addbtn" on:click={()=>createPoject()}>Create</button>
     </div>
     <div></div>
 </div>
