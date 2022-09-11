@@ -1,5 +1,5 @@
 <script context='module'>
-    export async function load(){
+    export async function load({fetch}){
         const res = await fetch("http://localhost:5000/projects")
         if(res.ok){
             const projects = await res.json()
@@ -48,10 +48,10 @@
             }).then(resp=>resp.json())
             .then(newdt => (projects = [newdt, ...projects]))
             
-            projects = [...projects, {id:pid, name, description, stories:[], features:[], sprints:[]}]
-            description = ''
-            name = ''
-            goto(`/project/${pid}`,{replaceState: false})
+            projects = [...projects, {id:pid, name:name, description:description, stories:[], features:[], sprints:[]}]
+            // description = ''
+            // name = ''
+            goto(`/project/${pid}`,{replaceState: true})
         }
     }
 </script>

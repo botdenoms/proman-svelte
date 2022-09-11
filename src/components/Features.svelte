@@ -2,42 +2,51 @@
     let feature = ''
     let description = ''
     let selected = -1
+    let filtered = []
+    export let addFeature
 
-    $:stories = [
-        {
-            user: "denoms",
-            story: "Lorem ipsum dolor, sit amet consectetur adipisicing"
-        },
-        {
-            user: "deno0ms",
-            story: "Lorem ipsum dolor, sit amet consectetur adipisicing...."
-        }
+    export let stories = [
+        // {
+        //     user: "denoms",
+        //     story: "Lorem ipsum dolor, sit amet consectetur adipisicing"
+        // },
+        // {
+        //     user: "deno0ms",
+        //     story: "Lorem ipsum dolor, sit amet consectetur adipisicing...."
+        // }
     ]
 
-    $:features = [
-        {
-            feature: "feature verb",
-            details: "Lorem ipsum dolor, sit amet consectetur adipisicing"
-        }
+    export let features = [
+        // {
+        //     feature: "feature verb",
+        //     details: "Lorem ipsum dolor, sit amet consectetur adipisicing"
+        // }
     ]
 
     const selectStory = (/** @type {number} */ idx)=>{
         selected = idx
         // fetch features list with selectd story id
+        filtered = features.filter((item)=> item.storyId === stories[selected].id)
     }
     const add = ()=>{
         if(selected === -1) return
         if(feature === '') return alert("feature is required")
         if(description === '') return alert("description is required")
+        features = [...features, {id: features.length + 1, feature, details:description, storyId: stories[selected].id}]
         // add record to db on the selected story
-        features = [...features, {feature, details:description}]
+        addFeature(features)
+        filtered = features.filter((item)=> item.storyId === stories[selected].id)
+        reset()
     }
     const reset = ()=>{
         feature = ''
         description = ''
     }
     const remove = (/** @type {number} */ idx)=>{
-        alert(`remove fearure ${idx}`)
+        // alert(`remove fearure ${filtered[idx].id}`)
+        features = features.filter((item)=> item.id !== filtered[idx].id)
+        addFeature(features)
+        filtered = features.filter((item)=> item.storyId === stories[selected].id)
     }
 </script>
 
@@ -73,7 +82,7 @@
         <span>Features in story</span>
         {#if selected !== -1}
             <div class="items">
-                {#each features as feat,i}
+                {#each filtered as feat,i}
                     <div class="feat">
                         <div class="top">
                             <span>{feat.feature}</span>

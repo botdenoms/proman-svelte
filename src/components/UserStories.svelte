@@ -8,7 +8,11 @@
     let priority = 2
     let division = 2
 
-    $:stories = []
+    export /**
+* @type {any[]}
+*/
+     let stories = []
+     export let addStory
 
     const reset = ()=>{
         user = userstory = criteria = ''
@@ -20,7 +24,20 @@
         if(!criteria) return alert('Acceptance criteria is required')
         if(!user) return alert('A user is required')
         // write to db
-        stories = [...stories, {user, story: userstory}]
+        const pid = stories.length + 1
+            // fetch(`http://localhost:5000/projects/${id}`, {
+            //     method:'POST',
+            //     headers: {
+            //         'Content-type' :'application/json'
+            //     },
+            //     body: JSON.stringify({id:pid, user, story: userstory, criteria, priority, division, estimate})
+            // }).then(resp=>resp.json())
+            // .then(newdt => {
+            //     newdt = {stories: [...stories, {id:pid, user, story: userstory, criteria, priority, division, estimate}], ...newdt}
+            //     console.log(newdt);
+            // })
+        stories = [...stories, {id:pid, user, story: userstory, criteria, priority, division, estimate}]
+        addStory(stories)
         reset()
     }
 

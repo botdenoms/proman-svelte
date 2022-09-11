@@ -1,15 +1,91 @@
+<script context="module">
+    export async function load({params, fetch}){
+        const id = params.id
+        const url = `http://localhost:5000/projects/${id}`
+        const res = await fetch(url)
+        const project = await res.json()
+        return {
+            props: {project}
+        }
+        // if(res.ok){
+        //     const project = await res.json()
+        //     return {
+        //         props: {project}
+        //     }
+        // }
+    }
+</script>
 <script>
-    import {page} from '$app/stores'
+    // import {onMount} from 'svelte'
+
+    // import {page} from '$app/stores'
     import UserStories from '../../../src/components/UserStories.svelte'
     import Features from '../../../src/components/Features.svelte'
     import Sprints from '../../../src/components/Sprints.svelte'
     import Runs from '../../../src/components/Runs.svelte'
-    const id = $page.params.id
-    //onmount use id to fetch project data
+    // const id = $page.params.id
+    // onmount use id to fetch project data
+    // onMount( async ()=>{
+    //     // 127.0.0.1:port
+    //     let url = 'http://localhost:5000/projects/' + id
+    //     let resp = await fetch(url)
+    //     // then(response => response.json()).then(data=>console.log(data)).catch(error=>console.log(error))
+    //     let data = await resp.json()
+    //     // console.log(data)
+    //     project = data
+    // })
+
+    export /**
+* @type {{ name: any; } | undefined}
+*/
+     let project
     let idx = 0
     const tabChange = (/** @type {any} */ index)=>{
         idx = index
     }
+
+    const addStory = async(data)=>{
+        project = {...project, stories: [...data]}
+        console.log(project);
+        fetch(`http://localhost:5000/projects/${project.id}`, {
+            
+                method:'PUT',
+                headers: {
+                    'Content-type' :'application/json'
+                },
+                body: JSON.stringify({...project})
+            }).then(resp=>resp.json())
+            .then(newdt => (console.log(newdt)))
+    }
+
+    const addFeature = async(data)=>{
+        project = {...project, features: [...data]}
+        console.log(project);
+        fetch(`http://localhost:5000/projects/${project.id}`, {
+            
+                method:'PUT',
+                headers: {
+                    'Content-type' :'application/json'
+                },
+                body: JSON.stringify({...project})
+            }).then(resp=>resp.json())
+            .then(newdt => (console.log(newdt)))
+    }
+
+    const addSprint = async(data)=>{
+        project = {...project, sprints: [...data]}
+        console.log(project);
+        fetch(`http://localhost:5000/projects/${project.id}`, {
+            
+                method:'PUT',
+                headers: {
+                    'Content-type' :'application/json'
+                },
+                body: JSON.stringify({...project})
+            }).then(resp=>resp.json())
+            .then(newdt => (console.log(newdt)))
+    }
+
 </script>
 <div class="container">
     <div class="topbar">
@@ -17,6 +93,13 @@
             <div class="logo"></div>
             <span>Proman</span>
         </div>
+        {#if project === undefined}
+            <span></span>
+        {:else}
+            <span class="name">{project.name} </span>
+        {/if}
+        <!-- {project === undefined?<span></span>:<span class="name"></span>} -->
+        <div></div>
     </div>
     <div class="main">
         <div class="tab">
@@ -35,11 +118,11 @@
         </div>
         <div class="content">
             {#if idx === 0}
-                <UserStories/>
+                <UserStories stories={project.stories} {addStory}/>
             {:else if idx === 1}
-                <Features/>
+                <Features stories={project.stories} features={project.features} {addFeature}/>
             {:else if idx === 2}
-                <Sprints/>
+                <Sprints stories={project.stories} sprints={project.sprints} features={project.features} {addSprint}/>
             {:else}
                 <Runs/>
             {/if}
@@ -59,11 +142,24 @@
         grid-template-rows: auto 1fr;
     }
 
+    .topbar{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #c1c1c1;
+    }
+
+    .name{
+        color: #1e1e1e;
+        font-size: 24px;
+        user-select: none;
+        cursor: pointer;
+    }
+
     .logobox{
         display: flex;
         align-items: center;
         padding: 10px;
-        background: #c1c1c1;
     }
 
     .logobox span{

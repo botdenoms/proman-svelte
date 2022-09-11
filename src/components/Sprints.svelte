@@ -1,13 +1,18 @@
 <script>
     let sprint = ''
     let index = -1
-    $: sprints = [1]
-    $: stories = [1,11,2]
+    export let addSprintStory
+    export let addSprint
+    export let features = [] 
+    export let sprints = []
+    export let stories = []
+    let availStories = [...stories]
 
     const add = () =>{
         if(!sprint) return alert("sprint name is required")
+        sprints = [...sprints, {id: sprints.length + 1, name: sprint, stories: [], features: []}]
         sprint = ''
-        sprints = [...sprints, 5]
+        addSprint(sprints)
     }
 
     const select = (/** @type {number} */ idx) =>{
@@ -16,11 +21,14 @@
 
     const assign = (/** @type {number} */ idx) =>{
         if (index === -1) return
-        alert(idx.toString())
-        let tmp = stories.filter((v,i)=>{
-            return i !== idx?true:false
-        })
-        stories = tmp
+        // alert(idx.toString())
+        // sprints = [...sprints, {id: sprints.length + 1, name: sprint, stories: [], features: []}]
+        let temp = []
+        temp = [...sprints[index].stories]
+        temp.push(availStories[idx].id)
+        sprints[index].stories = [...temp]
+        addSprint(sprints)
+        availStories = availStories.filter((v)=> v.id !== availStories[idx].id)
     }
 
 </script>
@@ -36,8 +44,8 @@
             <div class="itemslist">
                 {#each sprints as sprint, i}
                     <div class="{index === i? 'item active' : 'item'}" on:click={()=>select(i)}>
-                        <span>Lorem ipsum</span>
-                        <span>2</span>
+                        <span>{sprint.name}</span>
+                        <span>{sprint.stories.length}</span>
                     </div> 
                 {/each}  
             </div>
@@ -46,21 +54,20 @@
     <div class="stories">
         <span>User stories</span>
         <div class="items">
-            {#each stories as sty, i}
+            {#each availStories as sty, i}
             <div class="story" on:click={()=>assign(i)}>
                 <div>
-                    <span id='user'>User identity</span>
+                    <span id='user'>{sty.user}</span>
                     <div class="userstory">
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Explicabo, sed asperiores!
+                        {sty.story}
                     </div>
                 </div>
                 <div>
                     <div class="prior">
-                        Priority: <span>1</span>
+                        Priority: <span>{sty.priority}</span>
                     </div>
                     <div class="prior">
-                        Features: <span>1</span>
+                        Features: <span>{features.filter((i)=>i.storyId === sty.id).length}/{features.length}</span>
                     </div>
                 </div>
             </div>
