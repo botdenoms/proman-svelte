@@ -1,12 +1,20 @@
 <script>
+    import {onMount} from 'svelte'
     let sprint = ''
     let index = -1
-    export let addSprintStory
     export let addSprint
     export let features = [] 
     export let sprints = []
     export let stories = []
     let availStories = [...stories]
+
+    onMount(()=>{
+        sprints.forEach(sprnt => {
+            sprnt.stories.forEach(element => {
+                availStories = availStories.filter((v)=> v.id !== element)
+            })  
+        })
+    })
 
     const add = () =>{
         if(!sprint) return alert("sprint name is required")
