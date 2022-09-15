@@ -1,4 +1,5 @@
 <script>
+    import Counter from './Counter.svelte'
     let custom = false
     let aval = -1
     let run = -1
@@ -122,12 +123,13 @@
                         <div>
                             <span>{running[0].name}</span>
                         </div>
-                        <div class="countdown">
+                        <!-- <div class="countdown">
                             <div class="dtbox"><span>1</span> D</div>
                             <div class="dtbox"><span>1</span> H</div>
                             <div class="dtbox"><span>1</span> M</div>
                             <div class="dtbox"><span>1</span> S</div>
-                        </div>
+                        </div> -->
+                        <Counter/>
                     </div>
                     <div class="checklist">
                         <div class="tabs">
