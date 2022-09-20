@@ -74,7 +74,7 @@
 
     const addSprint = async(data)=>{
         project = {...project, sprints: [...data]}
-        console.log(project);
+        // console.log(project);
         fetch(`http://localhost:5000/projects/${project.id}`, {
             
                 method:'PUT',
@@ -124,7 +124,7 @@
             {:else if idx === 2}
                 <Sprints stories={project.stories} sprints={project.sprints} features={project.features} {addSprint}/>
             {:else}
-                <Runs/>
+                <Runs sprints={project.sprints} features={project.features} stories={project.stories} {addSprint}/>
             {/if}
         </div>
     </div>

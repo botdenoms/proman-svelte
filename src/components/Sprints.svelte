@@ -18,7 +18,7 @@
 
     const add = () =>{
         if(!sprint) return alert("sprint name is required")
-        sprints = [...sprints, {id: sprints.length + 1, name: sprint, stories: [], features: []}]
+        sprints = [...sprints, {id: sprints.length + 1, name: sprint, stories: [], features: [], status: 0, end: ""}]
         sprint = ''
         addSprint(sprints)
     }

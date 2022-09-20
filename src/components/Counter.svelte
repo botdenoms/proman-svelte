@@ -1,39 +1,49 @@
 <script>
-import { onMount } from "svelte";
+    import { onMount } from "svelte"
+    import moment from 'moment'
     // export let deadline
-    const dt = new Date('2022-09-17T03:24:00')
+    export let end = ''
+    let nw = moment()
+    const dl = moment(end)
+    let dr = moment.duration(nw.diff(dl))
+    const dt = new Date(end)
     const now = new Date()
     let seconds = 60 - now.getSeconds()
     let minutes = 60 - now.getMinutes()
     let hours = 23 - now.getHours()
-    let day = dt.getDay() - now.getDay()
+    let day = dt.getDate() - now.getDate()
 
-onMount(async ()=>{
-    if(day === 0){
-
-    }
-    const interval = setInterval(()=>{
-        timeManager()
-    }, 1000)
-    return ()=>{
-        clearInterval(interval)
-    }
-})
+    onMount(async ()=>{
+        if(day === 0){
+            hours = dt.getHours() - now.getHours()
+            if(hours === 0){
+                minutes = dt.getMinutes() - now.getMinutes()
+            }
+        }
+        const interval = setInterval(()=>{
+            timeManager()
+        }, 1000)
+        return ()=>{
+            clearInterval(interval)
+        }
+    })
 
 const timeManager = ()=>{
-    if(seconds === 0){
-        seconds = 59
-        minutes -= 1 
-    }
-    if(minutes === 0){
-        minutes = 59
-        hours -= 1 
-    }
-    if(hours === 0){
-        hours = 23
-        day -= 1 
-    }
-    seconds --
+    nw = moment()
+    dr = moment.duration(nw.diff(dl))
+    // if(seconds === 0){
+    //     seconds = 59
+    //     minutes -= 1 
+    // }
+    // if(minutes === 0){
+    //     minutes = 59
+    //     hours -= 1 
+    // }
+    // if(hours === 0){
+    //     hours = 23
+    //     day -= 1 
+    // }
+    // seconds --
 }
 
 const digformat = (value)=>{
@@ -47,19 +57,19 @@ const digformat = (value)=>{
 
 <div class="container">
     <div class="divbox">
-        <span>{digformat(day)}</span>
+        <span>{dr.days()}</span>
         <span class="titleind">D</span>
     </div>
     <div class="divbox">
-        <span>{digformat(hours)}</span>
+        <span>{digformat(dr.hours() * -1)}</span>
         <span class="titleind">H</span>
     </div>
     <div class="divbox">
-        <span>{digformat(minutes)}</span>
+        <span>{digformat(dr.minutes() * -1)}</span>
         <span class="titleind">M</span>
     </div>
     <div class="divbox">
-        <span>{digformat(seconds)}</span>
+        <span>{digformat(dr.seconds() * -1)}</span>
         <span class="titleind">S</span>
     </div>
 </div>

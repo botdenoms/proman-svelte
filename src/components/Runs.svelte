@@ -5,32 +5,37 @@
     let run = -1
     let doneIdx = -1
     let viewid = -1
-
-    $:sprints = [
-        {
-            name:"Sprint one",
-            stories: [5],
-            features: [12],
-            time: 5,
-            division: 'Days',
-            status: 0
-        },
-        {
-            name:"Sprint old",
-            stories: [1],
-            features: [2],
-            time: 1,
-            division: 'Days',
-            status: 2
-        },
-        {
-            name:"Sprint two",
-            stories: [4, 5, 6],
-            features: [8],
-            time: 2,
-            division: 'Days',
-            status: 1
-        }
+    let cestimate = 1
+    let cdiv = 2
+    
+    export let addSprint
+    export let stories = []
+    export let features = []
+    export let sprints = [
+        // {
+        //     name:"Sprint one",
+        //     stories: [5],
+        //     features: [12],
+        //     time: 5,
+        //     division: 'Days',
+        //     status: 0
+        // },
+        // {
+        //     name:"Sprint old",
+        //     stories: [1],
+        //     features: [2],
+        //     time: 1,
+        //     division: 'Days',
+        //     status: 2
+        // },
+        // {
+        //     name:"Sprint two",
+        //     stories: [4, 5, 6],
+        //     features: [8],
+        //     time: 2,
+        //     division: 'Days',
+        //     status: 1
+        // }
     ]
 
     $:available = sprints.filter((i)=>i.status === 0)
@@ -41,9 +46,47 @@
         viewid = idx
     }
 
-    const customChange = ()=>{
-        custom = !custom
+    const featuresNo = (strlist)=>{
+        let count = 0
+        strlist.forEach(strid => {
+            features.forEach(element => {
+                if(element.storyId === strid){
+                    count ++
+                }
+            })  
+        })
+        return count
     }
+
+    const timeFromStroies = (strlist)=>{
+        let mcount = 0
+        let wcount = 0
+        let dcount = 0
+        let hcount = 0 
+        strlist.forEach(strid => {
+            stories.forEach(element => {
+                if(element.id === strid){
+                    if(element.division === 0){
+                        hcount += element.estimate
+                    }
+                    if(element.division === 1){
+                        dcount += element.estimate
+                    }
+                    if(element.division === 2){
+                        wcount += element.estimate
+                    }
+                    if(element.division === 3){
+                        mcount += element.estimate
+                    }
+                }
+            })
+        })
+        return `${mcount}M ${wcount}W ${dcount}D ${hcount}H`
+    }
+
+    // const customChange = ()=>{
+    //     custom = !custom
+    // }
 
     const selectAval = (/** @type {number} */ idx)=>{
         run = -1
@@ -80,7 +123,103 @@
             alert("Cannot run two sprints at the same time")
             return
         }
-        // logic to start a new sprint
+        // check if stories is > features, need future improvements
+        if(available[aval].stories.length > featuresNo(available[aval].stories)){
+            alert("User stories needs to have at least one feature ")
+            return
+        }
+        let trans = available[aval]
+        let temp = sprints.filter((i)=>i.id !== available[aval].id)
+        trans.status = 1
+        let start = new Date() 
+        // '2022-09-17T03:24:00
+        if(custom){
+            if(cdiv === 0){
+                let yr = start.getFullYear()
+                let mnt = (start.getMonth() + 1).toString().padStart(2, '0')
+                let dt = start.getDate().toString().padStart(2, '0')
+                let hr = (start.getHours() + cestimate).toString().padStart(2, '0')
+                let mn = start.getMinutes().toString().padStart(2, '0')
+                let sc = start.getSeconds().toString().padStart(2, '0')
+                trans.end = `${yr}-${mnt}-${dt}T${hr}:${mn}:${sc}`
+            } else if(cdiv === 1){
+                let yr = start.getFullYear()
+                let mnt = (start.getMonth() + 1).toString().padStart(2, '0')
+                let hr = start.getHours().toString().padStart(2, '0')
+                let dt = (start.getDate() + cestimate).toString().padStart(2, '0')
+                let mn = start.getMinutes().toString().padStart(2, '0')
+                let sc = start.getSeconds().toString().padStart(2, '0')
+                trans.end = `${yr}-${mnt}-${dt}T${hr}:${mn}:${sc}`
+            }else if(cdiv === 2){
+                let yr = start.getFullYear()
+                let mnt = (start.getMonth() + 1).toString().padStart(2, '0')
+                let hr = start.getHours().toString().padStart(2, '0')
+                let dt = (start.getDate() + (cestimate * 7)).toString().padStart(2, '0')
+                let mn = start.getMinutes().toString().padStart(2, '0')
+                let sc = start.getSeconds().toString().padStart(2, '0')
+                trans.end = `${yr}-${mnt}-${dt}T${hr}:${mn}:${sc}`
+            }else{
+                let yr = start.getFullYear()
+                let mnt = (start.getMonth() + 1 + cestimate).toString().padStart(2, '0')
+                let hr = start.getHours().toString().padStart(2, '0')
+                let dt = start.getDate().toString().padStart(2, '0')
+                let mn = start.getMinutes().toString().padStart(2, '0')
+                let sc = start.getSeconds().toString().padStart(2, '0')
+                trans.end = `${yr}-${mnt}-${dt}T${hr}:${mn}:${sc}`
+            }
+        }else{
+            let mcount = 0
+            let wcount = 0
+            let dcount = 0
+            let hcount = 0 
+            available[aval].stories.forEach(strid => {
+                stories.forEach(element => {
+                    if(element.id === strid){
+                        if(element.division === 0){
+                            hcount += element.estimate
+                        }
+                        if(element.division === 1){
+                            dcount += element.estimate
+                        }
+                        if(element.division === 2){
+                            wcount += element.estimate
+                        }
+                        if(element.division === 3){
+                            mcount += element.estimate
+                        }
+                    }
+                })
+            })
+            if(hcount > 0 || dcount > 0 || wcount > 0 || mcount){
+                let yr = start.getFullYear()
+                let mnt = (start.getMonth() + 1 + mcount).toString().padStart(2, '0')
+                let dt
+                if(wcount > 0 && dcount > 0){
+                    dt = (start.getDate() + (wcount * 7) + dcount).toString().padStart(2, '0')
+                }else{
+                    if(wcount > 0){
+                        dt = (start.getDate() + (wcount * 7)).toString().padStart(2, '0')
+                    }else{
+                        dt = (start.getDate() + dcount).toString().padStart(2, '0')
+                    }
+                }
+                let hr = (start.getHours() + hcount).toString().padStart(2, '0')
+                let mn = start.getMinutes().toString().padStart(2, '0')
+                let sc = start.getSeconds().toString().padStart(2, '0')
+                trans.end = `${yr}-${mnt}-${dt}T${hr}:${mn}:${sc}`
+            }else{
+                return alert("Cannot start the sprint")
+            }
+            // trans.end = """
+        }
+	    aval = -1
+	    run = -1
+    	doneIdx = -1
+        sprints = [...temp, trans]
+        addSprint(sprints)
+        available = sprints.filter((i)=>i.status === 0)
+        running = sprints.filter((i)=>i.status === 1)
+        done = sprints.filter((i)=>i.status === 2)
     }
 </script>
 
@@ -123,13 +262,7 @@
                         <div>
                             <span>{running[0].name}</span>
                         </div>
-                        <!-- <div class="countdown">
-                            <div class="dtbox"><span>1</span> D</div>
-                            <div class="dtbox"><span>1</span> H</div>
-                            <div class="dtbox"><span>1</span> M</div>
-                            <div class="dtbox"><span>1</span> S</div>
-                        </div> -->
-                        <Counter/>
+                        <Counter end={running[0].end}/>
                     </div>
                     <div class="checklist">
                         <div class="tabs">
@@ -181,22 +314,22 @@
                     No of stories: <span>{available[aval].stories.length}</span>
                 </div>
                 <div class="tile">
-                    No of features: <span>{available[aval].features.length}</span>
+                    No of features: <span>{featuresNo(available[aval].stories)}</span>
                 </div>
                 <div class="tile">
-                    Estimated time: <span>{available[aval].time} {available[aval].division}</span>
+                    Estimated time: <span>{timeFromStroies(available[aval].stories)}</span>
                 </div>
                 <div class="custom">
                     Use custom time:
-                    <input type="checkbox" on:click={customChange}>
+                    <input type="checkbox" bind:checked={custom}>
                     {#if custom}
                         <div class="more">
-                            <input type="number" placeholder=1>
-                            <select name="time" value=1>
-                                <option value=0>Hour(s)</option>
-                                <option value=1>Day(s)</option>
-                                <option value=2>Week(s)</option>
-                                <option value=3>Month(s)</option>
+                            <input type="number" placeholder=1 bind:value={cestimate}>
+                            <select name="time" bind:value={cdiv}>
+                                <option value={0}>Hour(s)</option>
+                                <option value={1}>Day(s)</option>
+                                <option value={2}>Week(s)</option>
+                                <option value={3}>Month(s)</option>
                             </select>
                         </div>
                     {/if}
@@ -213,10 +346,10 @@
                     No of stories: <span>{done[doneIdx].stories.length}</span>
                 </div>
                 <div class="tile">
-                    No of features: <span>{done[doneIdx].features.length}</span>
+                    No of features: <span>{featuresNo(done[doneIdx].stories)}</span>
                 </div>
                 <div class="tile">
-                    Estimated time: <span>{done[doneIdx].time} {done[doneIdx].division}</span>
+                    Estimated time: <span>{timeFromStroies(done[doneIdx].stories)}</span>
                 </div>
             </div> 
         {:else if run !== -1}
@@ -229,10 +362,10 @@
                     No of stories: <span>{running[run].stories.length}</span>
                 </div>
                 <div class="tile">
-                    No of features: <span>{running[run].features.length}</span>
+                    No of features: <span>{featuresNo(running[run].stories)}</span>
                 </div>
                 <div class="tile">
-                    Estimated time: <span>{running[run].time} {running[run].division}</span>
+                    Estimated time: <span>{timeFromStroies(running[run].stories)}</span>
                 </div>
             </div>
         {/if}
@@ -274,15 +407,10 @@
         color: #1e1e1e;
         font-size: 18px;
     }
-    .dtbox span{
-        color: red;
-    }
     .tabs{
         display: flex;
     }
-    .countdown{
-        display: flex;
-    }
+
     .feats{
         display: flex;
         margin: 0 5px;
@@ -388,6 +516,7 @@
         box-shadow: 0 3px 2px rgba(0, 0, 0, .4);
     }
     .running{
+        height: 100%;
         margin: 0 10px;
         display: flex;
         justify-content: center;
