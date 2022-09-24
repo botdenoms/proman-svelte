@@ -60,9 +60,9 @@
         <div class="prior">
             <label for="priority">priority</label>
             <select name="priority" bind:value={priority} >
-                <option value=1>Low</option>
-                <option value=2>Mid</option>
-                <option value=3>High</option>
+                <option value={1}>Low</option>
+                <option value={2}>Mid</option>
+                <option value={3}>High</option>
             </select>
         </div>
         <input type="text" placeholder="User" bind:value={user}>
@@ -70,10 +70,10 @@
         <div class="prior">
             <label for="time">time division</label>
             <select name="time" bind:value={division} >
-                <option value=0>Hour(s)</option>
-                <option value=1>Day(s)</option>
-                <option value=2>Week(s)</option>
-                <option value=3>Month(s)</option>
+                <option value={0}>Hour(s)</option>
+                <option value={1}>Day(s)</option>
+                <option value={2}>Week(s)</option>
+                <option value={3}>Month(s)</option>
             </select>
         </div>
     </div>

@@ -43,6 +43,10 @@
     $:done = sprints.filter((i)=>i.status === 2)
 
     const more = (/** @type {number} */ idx)=>{
+        if (viewid === idx){
+            viewid = -1
+            return
+        }
         viewid = idx
     }
 
@@ -84,9 +88,11 @@
         return `${mcount}M ${wcount}W ${dcount}D ${hcount}H`
     }
 
-    // const customChange = ()=>{
-    //     custom = !custom
-    // }
+    const storyName = (stryId)=>{
+        let trg = stories.filter((s)=>s.id === stryId)
+        // console.log(trg)
+        return trg[0].user
+    }
 
     const selectAval = (/** @type {number} */ idx)=>{
         run = -1
@@ -221,6 +227,10 @@
         running = sprints.filter((i)=>i.status === 1)
         done = sprints.filter((i)=>i.status === 2)
     }
+
+    const markFeat = (ftid, strid)=>{
+        alert(`${ftid}, ${strid}`)
+    }
 </script>
 
 <div class="wrapper">
@@ -267,10 +277,10 @@
                     <div class="checklist">
                         <div class="tabs">
                             <div class="feats">
-                                Stories: <span>1/5</span>
+                                Stories: <span>1/{running[0].stories.length}</span>
                             </div>
                             <div class="feats">
-                                Features: <span>3/18</span>
+                                Features: <span>3/{featuresNo(running[0].stories)}</span>
                             </div>
                         </div>
                         <div class="list">
@@ -279,23 +289,19 @@
                                     <div class="header">
                                         <div>
                                             <span>0%</span>
-                                            <span>{stry}</span>
+                                            <span>{storyName(stry)}</span>
                                         </div>
                                         <span class="dropdwn" on:click={()=>more(i)}>></span>   
                                     </div>
                                     <div class="{viewid === i? 'features' : 'featuresoff'}">
-                                        <div class="feature">
-                                            <input type="checkbox">
-                                            <span>features name</span>
-                                        </div>
-                                        <div class="feature">
-                                            <input type="checkbox">
-                                            <span>features name</span>
-                                        </div>
-                                        <div class="feature">
-                                            <input type="checkbox">
-                                            <span>features name</span>
-                                        </div>
+                                        {#each features as ft , ind}
+                                            {#if ft.storyId === stry}
+                                                <div class="feature">
+                                                    <input type="checkbox" on:change={markFeat(ft.id, stry)}>
+                                                    <span>{ft.feature}</span>
+                                                </div>
+                                            {/if}
+                                        {/each}
                                     </div>
                                 </div>
                             {/each}
